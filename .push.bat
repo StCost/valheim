@@ -27,7 +27,6 @@ if %errorlevel% neq 0 (
     git commit -m "Auto-sync: Update Valheim save files"
     if %errorlevel% neq 0 (
         echo ERROR: Commit failed
-        del temp_status.txt
         pause
         exit /b 1
     )
@@ -40,7 +39,6 @@ if %errorlevel% neq 0 (
     git commit -m "Auto-sync: Update Valheim save files"
     if %errorlevel% neq 0 (
         echo ERROR: Commit failed
-        del temp_status.txt
         pause
         exit /b 1
     )
@@ -77,7 +75,10 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-del temp_status.txt
+REM Clean up temporary files
+if exist temp_status.txt del temp_status.txt
+if exist temp_behind.txt del temp_behind.txt
+
 echo ========================================
 echo Sync completed successfully!
 echo ========================================

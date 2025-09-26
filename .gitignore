@@ -1,0 +1,12 @@
+# Ignore everything by default
+*
+
+# But include the specific files we want to track
+!.gitignore
+!worlds/SaintWorld.db
+!worlds/SaintWorld.fwl
+!characters/stcosto.fch
+
+# Don't ignore the directories themselves
+!worlds/
+!characters/

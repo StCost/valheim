@@ -4,6 +4,7 @@
 # But include the specific files we want to track
 !README.md
 !.gitignore
+!.push.bat
 !worlds/SaintWorld.db
 !worlds/SaintWorld.fwl
 !characters/stcosto.fch

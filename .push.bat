@@ -25,8 +25,10 @@ if %errorlevel% neq 0 (
     echo WARNING: There are uncommitted changes in working directory. Committing them now...
     git add .
     git commit -m "Auto-sync: Update Valheim save files"
+    REM Check if commit was successful by verifying the working tree is clean
+    git diff --quiet
     if %errorlevel% neq 0 (
-        echo ERROR: Commit failed
+        echo ERROR: Commit failed - working directory still has changes
         pause
         exit /b 1
     )
@@ -37,8 +39,10 @@ git diff --cached --quiet
 if %errorlevel% neq 0 (
     echo WARNING: There are staged changes. Committing them now...
     git commit -m "Auto-sync: Update Valheim save files"
+    REM Check if commit was successful by verifying no staged changes remain
+    git diff --cached --quiet
     if %errorlevel% neq 0 (
-        echo ERROR: Commit failed
+        echo ERROR: Commit failed - staged changes still remain
         pause
         exit /b 1
     )

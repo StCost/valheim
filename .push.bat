@@ -20,11 +20,31 @@ if %errorlevel% neq 0 (
 )
 
 REM Check if there are any uncommitted changes
-for /f %%i in ('findstr /c:" M " temp_status.txt') do (
-    echo WARNING: There are uncommitted changes. Please commit them first.
-    del temp_status.txt
-    pause
-    exit /b 1
+git diff --quiet
+if %errorlevel% neq 0 (
+    echo WARNING: There are uncommitted changes in working directory. Committing them now...
+    git add .
+    git commit -m "Auto-sync: Update Valheim save files"
+    if %errorlevel% neq 0 (
+        echo ERROR: Commit failed
+        del temp_status.txt
+        pause
+        exit /b 1
+    )
+    echo Changes committed successfully.
+)
+
+git diff --cached --quiet
+if %errorlevel% neq 0 (
+    echo WARNING: There are staged changes. Committing them now...
+    git commit -m "Auto-sync: Update Valheim save files"
+    if %errorlevel% neq 0 (
+        echo ERROR: Commit failed
+        del temp_status.txt
+        pause
+        exit /b 1
+    )
+    echo Staged changes committed successfully.
 )
 
 REM Check if we're behind the remote
@@ -45,33 +65,7 @@ if %behind_count% gtr 0 (
     echo Merge successful!
 )
 
-REM Check if there are any changes to commit
-git diff --quiet
-if %errorlevel% equ 0 (
-    git diff --cached --quiet
-    if %errorlevel% equ 0 (
-        echo No changes to commit.
-        del temp_status.txt
-        echo ========================================
-        echo Sync complete - no changes needed
-        echo ========================================
-        pause
-        exit /b 0
-    )
-)
-
-echo Changes detected. Adding files...
-git add .
-
-echo Committing changes...
-git commit -m "Auto-sync: Update Valheim save files"
-
-if %errorlevel% neq 0 (
-    echo ERROR: Commit failed
-    del temp_status.txt
-    pause
-    exit /b 1
-)
+REM All changes should now be committed, proceed with push
 
 echo Pushing to GitHub...
 git push origin master
